@@ -4,7 +4,7 @@ Standalone v1 model for Smell Optimizer: quiz answers about everyday smells → 
 product recommendations. It is kept separate from the app repo.
 
 See **[PLAN.md](PLAN.md)** for the direction and **[reports/results.md](reports/results.md)**
-for the latest numbers.
+for the latest numbers. The team write-up is `reports/model_plan.pdf`.
 
 ## Run
 
@@ -13,6 +13,7 @@ python -m venv .venv && .venv/bin/pip install -r requirements.txt
 .venv/bin/python -m smell.simulate --n 120 --seed 0   # synthetic form export -> data/synthetic/
 .venv/bin/python run.py                                 # fit, compare, write reports/results.md (~3 min)
 .venv/bin/python run.py --no-curve                      # skip the sample-size experiment (~40 s)
+.venv/bin/python form_experiment.py                     # compare survey designs (~3 min)
 ```
 
 ## Use real responses
@@ -23,9 +24,10 @@ python -m venv .venv && .venv/bin/pip install -r requirements.txt
    Product names must match the rating-grid rows on the form exactly.
 3. Run `.venv/bin/python run.py --data data/real --no-curve`.
 
-The loader expects the six quiz questions as worded on the form, a grid titled
-`Rate the products you have smelled` with rows `[Product name]`, and an optional
-`Favorite scented product (optional)` question (titles are set in `smell/data.py`).
+The loader reads any everyday-smell questions listed in `QUIZ_NODES` (4 labelled choices or a
+1–6 linear scale), a grid titled `Rate the products you have smelled` with rows
+`[Product name]`, and an optional `Scented products you already love (optional)` question
+(one product per line). Titles are set in `smell/data.py`.
 
 ## Layout
 
@@ -36,6 +38,7 @@ The loader expects the six quiz questions as worded on the form, a grid titled
 | `smell/models.py` | Popularity (baseline), Note match, Persona clusters (k-means), all with one fit/predict interface |
 | `smell/evaluate.py` | split by person, MAE / liked@k, paired bootstrap, cross-validated hyperparameters |
 | `smell/simulate.py` | synthetic respondents in the same CSV format; hidden truth in `_truth/` for diagnostics only |
-| `run.py` | end-to-end comparison and report |
+| `run.py` | end-to-end model comparison → `reports/results.md` |
+| `form_experiment.py` | same people, different survey designs → `reports/form_experiment.md` |
 
 All data in `data/synthetic/` is invented. Its products are fictional.

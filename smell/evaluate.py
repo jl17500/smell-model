@@ -14,12 +14,16 @@ def split(resp, test_frac, seed):
     return resp.subset(ids[n_test:]), resp.subset(ids[:n_test])
 
 
-def user_metrics(pred, test):
+def user_metrics(pred, test, exclude=None):
     """Per person: mean absolute error, and whether the products the model ranks
-    first (among those the person rated) were ones they liked."""
+    first (among those the person rated) were ones they liked.
+
+    Products a person named as loved are an input, so they are not also scored as an
+    outcome. `exclude` (respondent -> list of product_ids) defaults to test.favorite."""
     r = test.ratings
-    # A named favorite is an input, so it is not also scored as an outcome.
-    r = r[r.product_id.to_numpy() != test.favorite.reindex(r.respondent).to_numpy()]
+    fav = (test.favorite if exclude is None else exclude).explode().dropna()
+    named = pd.MultiIndex.from_arrays([fav.index, fav.to_numpy()])
+    r = r[~pd.MultiIndex.from_arrays([r.respondent, r.product_id]).isin(named)]
     p = pred.to_numpy()[pred.index.get_indexer(r.respondent), pred.columns.get_indexer(r.product_id)]
     r = (r.assign(pred=p, err=np.abs(p - r.rating), liked=(r.rating >= LIKED).astype(float))
          .sort_values(["respondent", "pred"], ascending=[True, False]))

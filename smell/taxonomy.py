@@ -10,16 +10,21 @@ NODES = ["citrus", "fresh", "green", "floral", "fruity",
          "spicy", "gourmand", "woody", "amber", "musk"]
 
 # Quiz question (as worded in the Google Form) -> node weights (each row sums to 1).
-# Nothing here covers "fruity" or "musk", so the quiz cannot tell us about those.
 QUIZ_NODES = {
+    # Current form. Nothing here covers "fruity" or "musk", and citrus only weakly.
     "Fresh roses": {"floral": 0.9, "green": 0.1},
     "Christmas tree (Evergreen)": {"woody": 0.5, "green": 0.3, "amber": 0.2},
     "Air outside after summer rain": {"fresh": 0.7, "green": 0.3},
     "Freshly baked cinnamon rolls": {"gourmand": 0.6, "spicy": 0.4},
     "Vanilla candle": {"gourmand": 0.8, "amber": 0.2},
     "Freshly sliced ginger": {"spicy": 0.6, "citrus": 0.25, "fresh": 0.15},
+    # Proposed additions: near-universal smells for the nodes above that are missing.
+    "Fresh peaches": {"fruity": 0.85, "floral": 0.15},
+    "Clean laundry": {"musk": 0.6, "fresh": 0.4},
+    "Orange peel": {"citrus": 0.9, "fresh": 0.1},
 }
-QUIZ_ITEMS = list(QUIZ_NODES)
+CURRENT_QUIZ = list(QUIZ_NODES)[:6]
+PROPOSED_QUIZ = list(QUIZ_NODES)
 
 # Product note -> node weights. Extend this as the catalog grows; node_vector()
 # reports notes it does not know instead of silently dropping them.
@@ -77,4 +82,6 @@ def node_vector(notes, unknown=None):
     return v / v.sum()
 
 
-QUIZ_MATRIX = np.array([to_vector(QUIZ_NODES[q]) for q in QUIZ_ITEMS])  # (questions, nodes)
+def quiz_matrix(items):
+    """(questions, nodes) weights for the given quiz questions."""
+    return np.array([to_vector(QUIZ_NODES[q]) for q in items])

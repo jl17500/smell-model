@@ -2,9 +2,9 @@
 
 ## Data
 
-- 120 respondents; 1074 product ratings (median 9 per person) on 16 survey products; catalog of 40 products.
+- 120 respondents; 1015 product ratings (median 8 per person) on 16 survey products; catalog of 40 products.
 
-- 57% named a favorite product found in the catalog.
+- 6 everyday-smell questions; 52% named at least one product they already love (optional input).
 
 - Split by person: 96 train / 24 test (seed 0). Hyperparameters are chosen by cross-validation inside train; test is scored once.
 
@@ -14,10 +14,10 @@ MAE = average miss in rating points (1-5 scale). liked@1 / liked@3 = share of th
 
 | model | MAE (pts) | liked@1 | liked@3 | MAE vs baseline | liked@3 vs baseline |
 |---|---|---|---|---|---|
-| Popularity (baseline) | 0.747 | 0.625 | 0.653 | - | - |
-| Note match | 0.725 | 0.583 | 0.653 | -0.021 [-0.079, +0.035] | -0.000 [-0.056, +0.056] |
-| Persona clusters | 0.754 | 0.583 | 0.653 | +0.007 [-0.027, +0.042] | +0.000 [-0.056, +0.056] |
-| Persona clusters + notes | 0.729 | 0.625 | 0.597 | -0.017 [-0.072, +0.037] | -0.056 [-0.125, +0.014] |
+| Popularity (baseline) | 0.795 | 0.625 | 0.514 | - | - |
+| Note match | 0.676 | 0.792 | 0.625 | -0.118 [-0.175, -0.062] | +0.111 [+0.000, +0.236] |
+| Persona clusters | 0.709 | 0.667 | 0.597 | -0.086 [-0.113, -0.060] | +0.083 [+0.028, +0.153] |
+| Persona clusters + notes | 0.658 | 0.833 | 0.611 | -0.137 [-0.190, -0.087] | +0.097 [-0.014, +0.222] |
 
 ## Same data, repeated splits
 
@@ -25,23 +25,26 @@ MAE = average miss in rating points (1-5 scale). liked@1 / liked@3 = share of th
 
 | model | mean MAE | MAE beat baseline | mean liked@3 | liked@3 beat baseline |
 |---|---|---|---|---|
-| Note match | 0.721 | 20/20 | 0.623 | 17/20 |
-| Persona clusters | 0.760 | 13/20 | 0.584 | 6/20 |
-| Persona clusters + notes | 0.727 | 19/20 | 0.606 | 11/20 |
-| Popularity (baseline) | 0.768 | - | 0.588 | - |
+| Note match | 0.706 | 20/20 | 0.565 | 20/20 |
+| Persona clusters | 0.748 | 19/20 | 0.527 | 19/20 |
+| Persona clusters + notes | 0.711 | 20/20 | 0.549 | 20/20 |
+| Popularity (baseline) | 0.787 | - | 0.479 | - |
 
 ## Personas found by k-means
 
-k = 2 personas (shrink = 5), chosen by 5-fold cross-validation on training people.
+k = 5 personas (shrink = 5), chosen by 5-fold cross-validation on training people.
 
-Silhouette = 0.26 (0 = overlapping groups, 1 = cleanly separated).
+Silhouette = 0.23 (0 = overlapping groups, 1 = cleanly separated).
 
-Agreement with the hidden synthetic personas (adjusted Rand index) = 0.18 (1 = perfect).
+Agreement with the hidden synthetic personas (adjusted Rand index) = 0.09 (1 = perfect).
 
 | persona | people | leans toward | leans away from | top survey products |
 |---|---|---|---|---|
-| 0 | 43 | gourmand, spicy | - | Bakery No. 1; Fresh Aquatic No. 1; Christmas Forest No. 1 |
-| 1 | 53 | fresh, citrus | gourmand, spicy | Fresh Aquatic No. 1; Citrus Grove No. 1; Clean Linen No. 1 |
+| 0 | 10 | floral, gourmand | spicy, fresh | Sweet Vanilla No. 1; Clean Linen No. 1; Fresh Aquatic No. 1 |
+| 1 | 19 | floral, fresh | gourmand, spicy | Fresh Aquatic No. 1; Green Fougere No. 1; Clean Linen No. 1 |
+| 2 | 19 | gourmand, spicy | floral, fresh | Sweet Vanilla No. 1; Vanilla Amber No. 1; Bakery No. 1 |
+| 3 | 21 | fresh, woody | floral, gourmand | Fresh Aquatic No. 1; Rain & Moss No. 1; Citrus Grove No. 1 |
+| 4 | 27 | gourmand, floral | - | Fresh Aquatic No. 1; Citrus Grove No. 1; Clean Linen No. 1 |
 
 ## How many responses do we need?
 
@@ -51,28 +54,28 @@ Same hidden world, a fresh sample of people for each size and seed (10 seeds), 2
 
 | respondents | Note match | Persona clusters | Persona clusters + notes | Popularity (baseline) |
 |---|---|---|---|---|
-| 30 | 0.764 | 0.804 | 0.774 | 0.797 |
-| 60 | 0.734 | 0.777 | 0.740 | 0.793 |
-| 120 | 0.717 | 0.760 | 0.723 | 0.777 |
-| 250 | 0.691 | 0.724 | 0.695 | 0.753 |
-| 500 | 0.713 | 0.730 | 0.711 | 0.770 |
+| 30 | 0.681 | 0.739 | 0.688 | 0.743 |
+| 60 | 0.728 | 0.794 | 0.736 | 0.798 |
+| 120 | 0.707 | 0.749 | 0.712 | 0.771 |
+| 250 | 0.706 | 0.734 | 0.710 | 0.766 |
+| 500 | 0.704 | 0.735 | 0.714 | 0.762 |
 
 **Mean liked@3 (higher is better)**
 
 | respondents | Note match | Persona clusters | Persona clusters + notes | Popularity (baseline) |
 |---|---|---|---|---|
-| 30 | 0.567 | 0.511 | 0.517 | 0.511 |
-| 60 | 0.519 | 0.483 | 0.506 | 0.461 |
-| 120 | 0.581 | 0.540 | 0.576 | 0.514 |
-| 250 | 0.591 | 0.565 | 0.588 | 0.517 |
-| 500 | 0.579 | 0.554 | 0.575 | 0.521 |
+| 30 | 0.528 | 0.417 | 0.506 | 0.406 |
+| 60 | 0.486 | 0.447 | 0.472 | 0.442 |
+| 120 | 0.533 | 0.496 | 0.533 | 0.453 |
+| 250 | 0.519 | 0.490 | 0.508 | 0.442 |
+| 500 | 0.500 | 0.468 | 0.492 | 0.438 |
 
 **Seeds where the model's MAE beat the baseline's**
 
 | respondents | Note match | Persona clusters | Persona clusters + notes |
 |---|---|---|---|
-| 30 | 8/10 | 4/10 | 6/10 |
-| 60 | 9/10 | 9/10 | 9/10 |
+| 30 | 8/10 | 5/10 | 7/10 |
+| 60 | 10/10 | 4/10 | 9/10 |
 | 120 | 10/10 | 9/10 | 10/10 |
-| 250 | 10/10 | 9/10 | 10/10 |
+| 250 | 10/10 | 10/10 | 10/10 |
 | 500 | 10/10 | 10/10 | 10/10 |

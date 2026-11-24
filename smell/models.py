@@ -5,10 +5,10 @@ import numpy as np
 import pandas as pd
 from sklearn.cluster import KMeans
 
-from .taxonomy import QUIZ_MATRIX
+from .taxonomy import quiz_matrix
 
 PRIOR = 5              # pseudo-ratings pulling thinly rated products toward the overall mean
-FAVORITE_WEIGHT = 2.0  # a named favorite counts about as much as one strong quiz answer
+FAVORITE_WEIGHT = 2.0  # each named product counts about as much as one strong quiz answer
 
 
 def lookup(table, ratings):
@@ -33,19 +33,21 @@ class Popularity:
 
 
 class TasteProfile:
-    """Quiz answers (+ named favorite) -> preference weights over scent nodes.
+    """Everyday-smell answers (+ any products the person already loves) -> preference
+    weights over scent nodes.
 
     Each answer is centred on that question's training average, so a smell nearly
     everyone likes says less about a person than one that splits people."""
 
     def fit(self, quiz):
         self.item_mean = quiz.mean()
+        self.matrix = quiz_matrix(quiz.columns)
         return self
 
     def transform(self, resp, nodes):
-        u = (resp.quiz - self.item_mean).to_numpy() @ QUIZ_MATRIX
-        fav = resp.favorite.dropna()
-        u[resp.quiz.index.get_indexer(fav.index)] += FAVORITE_WEIGHT * nodes.loc[fav].to_numpy()
+        u = (resp.quiz[self.item_mean.index] - self.item_mean).to_numpy() @ self.matrix
+        fav = resp.favorite.explode().dropna()
+        np.add.at(u, resp.quiz.index.get_indexer(fav.index), FAVORITE_WEIGHT * nodes.loc[fav].to_numpy())
         return pd.DataFrame(u, index=resp.quiz.index, columns=nodes.columns)
 
 

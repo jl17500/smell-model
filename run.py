@@ -33,10 +33,12 @@ def fit_all(train, nodes, seed):
     return {name: m.fit(train, nodes) for name, m in models.items()}
 
 
-def evaluate(resp, nodes, seed):
+def evaluate(resp, nodes, seed, exclude=None):
+    """exclude: respondent -> products not to score (defaults to each person's named loved products)."""
     train, test = split(resp, TEST_FRAC, seed)
     models = fit_all(train, nodes, seed)
-    return train, test, models, {name: user_metrics(m.predict(test), test) for name, m in models.items()}
+    ex = None if exclude is None else exclude.loc[test.quiz.index]
+    return train, test, models, {name: user_metrics(m.predict(test), test, ex) for name, m in models.items()}
 
 
 def table(df, fmt="{:.3f}"):
@@ -147,7 +149,8 @@ def main():
         f"- {len(resp.quiz)} respondents; {len(resp.ratings)} product ratings "
         f"(median {n_rated.median():.0f} per person) on {resp.ratings.product_id.nunique()} survey products; "
         f"catalog of {len(catalog)} products.",
-        f"- {resp.favorite.notna().mean():.0%} named a favorite product found in the catalog.",
+        f"- {len(resp.quiz.columns)} everyday-smell questions; {resp.favorite.str.len().gt(0).mean():.0%} named "
+        "at least one product they already love (optional input).",
         f"- Split by person: {len(train.quiz)} train / {len(test.quiz)} test (seed {args.seed}). "
         "Hyperparameters are chosen by cross-validation inside train; test is scored once.",
         "## Results on held-out people",
