@@ -1,0 +1,41 @@
+product_id,name,category,notes,in_survey,source
+P01,Citrus Aromatic No. 1,cologne,bergamot;lemon;rosemary;musk;lavender,True,synthetic
+P02,Citrus Aromatic No. 2,cologne,bergamot;lemon;grapefruit;musk,False,synthetic
+P03,Citrus Aromatic No. 3,cologne,bergamot;lemon;rosemary;vetiver;musk,False,synthetic
+P04,Fresh Aquatic No. 1,cologne,sea salt;marine;ambroxan;mint;ozone,True,synthetic
+P05,Fresh Aquatic No. 2,cologne,sea salt;marine;ambroxan;bergamot;ozone,False,synthetic
+P06,Fresh Aquatic No. 3,cologne,sea salt;marine;bergamot;cedar;mint,False,synthetic
+P07,Woody Spice No. 1,cologne,cardamom;cedar;pink pepper;vetiver,True,synthetic
+P08,Woody Spice No. 2,cologne,cardamom;cedar;vetiver;black pepper,False,synthetic
+P09,Woody Spice No. 3,cologne,cardamom;cedar;pink pepper;ginger,False,synthetic
+P10,Amber Night No. 1,cologne,amber;incense;labdanum;vanilla;cinnamon,True,synthetic
+P11,Amber Night No. 2,cologne,amber;incense;labdanum;cinnamon,False,synthetic
+P12,Amber Night No. 3,cologne,amber;incense;tobacco;cinnamon,False,synthetic
+P13,Rose Garden No. 1,cologne,rose;peony;patchouli;raspberry;musk,True,synthetic
+P14,Rose Garden No. 2,cologne,rose;peony;peach;raspberry;patchouli,False,synthetic
+P15,Rose Garden No. 3,cologne,rose;peony;musk;patchouli,False,synthetic
+P16,Sweet Vanilla No. 1,cologne,vanilla;caramel;tonka;almond,True,synthetic
+P17,Sweet Vanilla No. 2,cologne,vanilla;caramel;coffee;almond;jasmine,False,synthetic
+P18,Sweet Vanilla No. 3,cologne,vanilla;caramel;jasmine;almond;coffee,False,synthetic
+P19,Green Fougere No. 1,cologne,lavender;oakmoss;basil;vetiver,True,synthetic
+P20,Green Fougere No. 2,cologne,lavender;oakmoss;basil;sage,False,synthetic
+P21,Green Fougere No. 3,cologne,lavender;oakmoss;sage;vetiver,False,synthetic
+P22,Fruity Floral No. 1,cologne,peach;pear;blackcurrant;magnolia;sandalwood,True,synthetic
+P23,Fruity Floral No. 2,cologne,peach;pear;blackcurrant;musk;magnolia,False,synthetic
+P24,Fruity Floral No. 3,cologne,peach;pear;sandalwood;blackcurrant;musk,False,synthetic
+P25,Christmas Forest No. 1,candle,fir;pine;cedar;orange;clove,True,synthetic
+P26,Christmas Forest No. 2,candle,fir;pine;clove;cedar;orange,False,synthetic
+P27,Bakery No. 1,candle,cinnamon;brown sugar;caramel;buttercream;vanilla,True,synthetic
+P28,Bakery No. 2,candle,cinnamon;brown sugar;caramel;buttercream;nutmeg,False,synthetic
+P29,Clean Linen No. 1,candle,clean cotton;white musk;lemon;lavender,True,synthetic
+P30,Clean Linen No. 2,candle,clean cotton;white musk;lemon;ozone,False,synthetic
+P31,Garden Bloom No. 1,candle,rose;peony;grass;pear,True,synthetic
+P32,Garden Bloom No. 2,candle,rose;peony;jasmine;pear,False,synthetic
+P33,Rain & Moss No. 1,candle,rain;oakmoss;ozone;cedar,True,synthetic
+P34,Rain & Moss No. 2,candle,rain;oakmoss;vetiver;sage,False,synthetic
+P35,Vanilla Amber No. 1,candle,vanilla;amber;tonka;musk,True,synthetic
+P36,Vanilla Amber No. 2,candle,vanilla;amber;tonka;musk;sandalwood,False,synthetic
+P37,Citrus Grove No. 1,candle,orange;grapefruit;lime;mint;basil,True,synthetic
+P38,Citrus Grove No. 2,candle,orange;grapefruit;mint;lime;basil,False,synthetic
+P39,Spiced Chai No. 1,candle,tea;ginger;lemon;cardamom;honey,True,synthetic
+P40,Spiced Chai No. 2,candle,tea;ginger;honey;cardamom;lemon,False,synthetic
