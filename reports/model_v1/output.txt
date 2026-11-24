@@ -1,0 +1,26 @@
+MODEL V1: persona clustering vs one-group baseline (synthetic data)
+Data: 120 respondents, 1015 ratings, 16 survey products
+Split by person (seed 0): 84 train / 36 test
+
+Elbow (inertia by k)
+  k   train      test
+  1     923.9     359.2
+  2     689.5     298.1
+  3     589.3     257.5
+  4     513.7     215.4
+  5     468.7     214.4
+  6     428.5     203.9
+  7     402.2     183.1
+  8     384.1     188.0
+  elbow: train k=3, test k=4
+
+Test people: top-3 hit rate (share of top-3 picks rated 4+), mean absolute rating error (1-5 scale)
+  Baseline (k=1)       top-3 hit 44%   MAE 0.80
+  v1 personas (k=3)    top-3 hit 49%   MAE 0.77
+
+Sample user: loves rain + clean laundry, dislikes roses + vanilla
+  persona 0; top 3: Fresh Aquatic No. 1; Green Fougere No. 1; Clean Linen No. 1
+
+Value per month (MADE-UP assumptions: 5,000 users/month, 3 picks each, 5% purchase rate on liked picks, $8 commission)
+  Baseline (k=1)       $2,667/month
+  v1 personas (k=3)    $2,944/month
