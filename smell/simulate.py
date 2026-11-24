@@ -15,8 +15,8 @@ The form design (which questions, which answer scale, how many loved products) o
 changes what is *asked*: the same seed gives the same people with the same tastes and
 ratings, so form designs can be compared fairly.
 
-    python -m smell.simulate --n 120 --seed 0 --out data/synthetic
-    python -m smell.simulate --questions proposed --scale 6 --max-loved 3 --out data/synthetic_proposed
+    python -m smell.simulate --n 120 --seed 0 --out data/synthetic          # v2 form (default)
+    python -m smell.simulate --questions current --scale 4 --max-loved 1     # original form
 """
 import argparse
 from pathlib import Path
@@ -90,7 +90,7 @@ def make_catalog(rng):
     return catalog
 
 
-def simulate(n, seed=0, world_seed=0, questions=CURRENT_QUIZ, scale=4, max_loved=1):
+def simulate(n, seed=0, world_seed=0, questions=PROPOSED_QUIZ, scale=6, max_loved=3):
     """Returns (catalog, form export, hidden truth) for n respondents.
 
     world_seed fixes the catalog and hidden truths; seed draws the people. The form
@@ -168,9 +168,9 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--n", type=int, default=120)
     ap.add_argument("--seed", type=int, default=0)
-    ap.add_argument("--questions", choices=["current", "proposed"], default="current")
-    ap.add_argument("--scale", type=int, choices=[4, 6], default=4)
-    ap.add_argument("--max-loved", type=int, default=1)
+    ap.add_argument("--questions", choices=["current", "proposed"], default="proposed")
+    ap.add_argument("--scale", type=int, choices=[4, 6], default=6)
+    ap.add_argument("--max-loved", type=int, default=3)
     ap.add_argument("--out", type=Path, default=Path("data/synthetic"))
     args = ap.parse_args()
     questions = CURRENT_QUIZ if args.questions == "current" else PROPOSED_QUIZ

@@ -57,6 +57,15 @@ NOTE_NODES = {
     "musk": {"musk": 1}, "white musk": {"musk": 1},
     "clean cotton": {"musk": 0.6, "fresh": 0.4}, "iris": {"musk": 0.5, "floral": 0.5},
     "ambroxan": {"musk": 0.5, "woody": 0.5},
+    # Added for the real survey products (data/real/catalog.csv).
+    "neroli": {"citrus": 0.5, "floral": 0.5}, "tangerine": {"citrus": 1},
+    "strawberry": {"fruity": 1}, "berries": {"fruity": 1}, "tropical fruit": {"fruity": 1},
+    "champagne": {"fruity": 0.6, "fresh": 0.4},
+    "violet": {"floral": 1}, "gardenia": {"floral": 1}, "ambrette": {"musk": 1},
+    "whipped cream": {"gourmand": 1}, "coconut": {"gourmand": 1}, "sugar": {"gourmand": 1},
+    "mahogany": {"woody": 1}, "teakwood": {"woody": 1}, "oak": {"woody": 1},
+    "balsam": {"amber": 0.5, "woody": 0.3, "green": 0.2},
+    "eucalyptus": {"green": 0.6, "fresh": 0.4}, "spearmint": {"fresh": 0.5, "green": 0.5},
 }
 
 

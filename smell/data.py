@@ -1,5 +1,7 @@
 """Load a Google Forms CSV export (real or synthetic) into model-ready tables."""
+import difflib
 import re
+import unicodedata
 import warnings
 from dataclasses import dataclass
 
@@ -32,6 +34,9 @@ class Responses:
 def load_catalog(path):
     catalog = pd.read_csv(path, index_col="product_id")
     catalog["notes"] = catalog["notes"].str.split(";")
+    unverified = catalog["source"].astype(str).str.contains("UNVERIFIED")
+    if unverified.any():
+        warnings.warn(f"{unverified.sum()} products have unverified notes; check them before trusting results")
     return catalog
 
 
@@ -70,12 +75,34 @@ def parse_form(form, catalog):
         raise ValueError("product ratings must be 1-5")
 
     text = form.get(FAVORITE_QUESTION, pd.Series("", index=form.index)).fillna("").astype(str)
-    named = text.str.split(r"[;\n]").apply(lambda xs: [x.strip().lower() for x in xs if x.strip()])
-    favorite = named.apply(lambda xs: [by_name[x] for x in xs if x in by_name])
+    named = text.str.split(r"[;\n]").apply(lambda xs: [x for x in xs if x.strip()])
+    favorite = named.apply(lambda xs: [pid for pid in (match_product(x, catalog) for x in xs) if pid])
     unmatched = (named.str.len() - favorite.str.len()).sum()
     if unmatched:
         warnings.warn(f"{unmatched} named products not found in the catalog")
     return Responses(quiz, ratings.reset_index(drop=True), favorite)
+
+
+def _norm(name):
+    name = unicodedata.normalize("NFKD", name).encode("ascii", "ignore").decode()
+    return " ".join(re.sub(r"[^a-z0-9]+", " ", name.lower()).split())
+
+
+def match_product(text, catalog, cutoff=0.85):
+    """Catalog product_id for a typed product name, forgiving case, accents, punctuation
+    and small typos; None if nothing is close enough."""
+    names = {_norm(n): pid for pid, n in catalog["name"].items()}
+    typed = _norm(text)
+    hit = difflib.get_close_matches(typed, list(names), n=1, cutoff=cutoff)
+    if hit:
+        return names[hit[0]]
+    # "Acqua di Gio", "Sauvage by Dior": every typed word appears in exactly one product name.
+    words = set(typed.split()) - {"by", "the"}
+    if len(words) >= 2:
+        found = [pid for name, pid in names.items() if words <= set(name.split())]
+        if len(found) == 1:
+            return found[0]
+    return None
 
 
 def _quiz_values(col):

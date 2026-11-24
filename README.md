@@ -16,11 +16,18 @@ python -m venv .venv && .venv/bin/pip install -r requirements.txt
 .venv/bin/python form_experiment.py                     # compare survey designs (~3 min)
 ```
 
+## Create the survey
+
+Open https://script.google.com → **New project** → paste `form/create_form.gs` → choose
+`createSmellForm` → **Run** → allow access. The execution log prints the share link, the edit
+link and a linked response sheet. Check the draft notes in `data/real/catalog.csv` first.
+
 ## Use real responses
 
-1. Download the Google Form responses as CSV and save them as `data/real/form_responses.csv`.
-2. Put the product list in `data/real/catalog.csv`, with columns
-   `product_id,name,category,notes,in_survey,source` and notes separated by `;`.
+1. Download the responses as CSV (from the form or its sheet) and save them as `data/real/form_responses.csv`.
+2. `data/real/catalog.csv` already lists the 16 survey products (columns
+   `product_id,name,category,notes,in_survey,source`, notes separated by `;`). Their notes are an
+   UNVERIFIED draft: check each one on the brand's page, then add more products.
    Product names must match the rating-grid rows on the form exactly.
 3. Run `.venv/bin/python run.py --data data/real --no-curve`.
 
@@ -39,6 +46,8 @@ The loader reads any everyday-smell questions listed in `QUIZ_NODES` (4 labelled
 | `smell/evaluate.py` | split by person, MAE / liked@k, paired bootstrap, cross-validated hyperparameters |
 | `smell/simulate.py` | synthetic respondents in the same CSV format; hidden truth in `_truth/` for diagnostics only |
 | `run.py` | end-to-end model comparison → `reports/results.md` |
+| `form/create_form.gs` | builds the v2 Google Form + response sheet (titles match the loader) |
+| `data/real/catalog.csv` | the 16 survey products with draft notes (verify before use) |
 | `form_experiment.py` | same people, different survey designs → `reports/form_experiment.md` |
 
 All data in `data/synthetic/` is invented. Its products are fictional.

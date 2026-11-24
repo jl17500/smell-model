@@ -12,7 +12,7 @@ import pandas as pd
 from sklearn.metrics import adjusted_rand_score, silhouette_score
 
 from smell.data import load_catalog, node_table, parse_form
-from smell.evaluate import paired_bootstrap, select_params, split, user_metrics
+from smell.evaluate import loved_hit_rate, paired_bootstrap, select_params, split, user_metrics
 from smell.models import NoteMatch, PersonaCluster, Popularity
 from smell.simulate import simulate
 
@@ -111,9 +111,9 @@ def repeated_splits(resp, nodes, seeds):
     """The same data split into train/test many ways: is the ranking of models stable?"""
     rows = []
     for seed in seeds:
-        *_, per_user = evaluate(resp, nodes, seed)
-        rows += [{"split": seed, "model": name, "mae": pu.mae.mean(), "liked@3": pu["liked@3"].mean()}
-                 for name, pu in per_user.items()]
+        _, test, models, per_user = evaluate(resp, nodes, seed)
+        rows += [{"split": seed, "model": name, "mae": pu.mae.mean(), "liked@3": pu["liked@3"].mean(),
+                  "loved": loved_hit_rate(models[name], test)} for name, pu in per_user.items()]
     df = pd.DataFrame(rows)
     mae = df.pivot(index="split", columns="model", values="mae")
     liked = df.pivot(index="split", columns="model", values="liked@3")
@@ -122,9 +122,14 @@ def repeated_splits(resp, nodes, seeds):
         "MAE beat baseline": mae.lt(mae[BASELINE], axis=0).sum().astype(str) + f"/{len(seeds)}",
         "mean liked@3": liked.mean(),
         "liked@3 beat baseline": liked.gt(liked[BASELINE], axis=0).sum().astype(str) + f"/{len(seeds)}",
+        "loved hit@10": df.groupby("model").loved.mean(),
     })
     out.loc[BASELINE, ["MAE beat baseline", "liked@3 beat baseline"]] = "-"
-    return f"{len(seeds)} different random person splits of this same dataset.\n\n" + table(out.rename_axis("model"))
+    n_products = len(nodes)
+    return (f"{len(seeds)} different random person splits of this same dataset. loved hit@10 is a second check that "
+            f"uses only the optional loved-products question: hide each loved product, rank all {n_products} catalog "
+            f"products from smell answers alone, and count how often it lands in the top 10 "
+            f"(random guessing: {10 / n_products:.2f}).\n\n" + table(out.rename_axis("model")))
 
 
 def main():

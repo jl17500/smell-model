@@ -3,6 +3,8 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import KFold
 
+from .data import Responses
+
 LIKED = 4      # a rating of 4 or 5 counts as liked
 MIN_RATED = 3  # ranking metrics need at least this many rated products per person
 
@@ -34,6 +36,19 @@ def user_metrics(pred, test, exclude=None):
                         "liked@3": r[rank < 3].groupby("respondent").liked.mean()})
     out.loc[by.size() < MIN_RATED, ["liked@1", "liked@3"]] = np.nan
     return out
+
+
+def loved_hit_rate(model, test, k=10):
+    """Second check that needs only the optional loved-products question: hide each person's
+    loved products, rank the whole catalog from their smell answers alone, and return the share
+    of loved products that land in the top k (None if nobody named one)."""
+    fav = test.favorite.explode().dropna()
+    if fav.empty:
+        return None
+    pred = model.predict(Responses(test.quiz, test.ratings, test.favorite.apply(lambda _: [])))
+    rank = pred.rank(axis=1, ascending=False)
+    r = rank.to_numpy()[rank.index.get_indexer(fav.index), rank.columns.get_indexer(fav.to_numpy())]
+    return float(np.mean(r <= k))
 
 
 def paired_bootstrap(a, b, col, n_boot=2000, seed=0):
